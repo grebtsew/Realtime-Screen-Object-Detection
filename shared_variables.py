@@ -1,4 +1,6 @@
 '''
+COPYRIGHT @ Grebtsew 2019
+
 This file contains a shared variables class and a mss screen stream capture class
 '''
 

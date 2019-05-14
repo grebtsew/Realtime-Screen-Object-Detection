@@ -6,6 +6,8 @@ import sys
 import time
 
 '''
+COPYRIGHT @ Grebtsew 2019
+
 This file contains functions for showing overlay detections
 '''
 

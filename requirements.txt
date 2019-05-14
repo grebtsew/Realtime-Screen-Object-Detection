@@ -1,0 +1,5 @@
+tensorflow
+PyQt5
+numpy
+mss
+Image

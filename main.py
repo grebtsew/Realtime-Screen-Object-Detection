@@ -1,5 +1,8 @@
 '''
 MAIN
+COPYRIGHT @ Grebtsew 2019
+
+
 This is main function, used to start instances of the full program
 '''
 
@@ -17,9 +20,11 @@ import numpy as np
 from pyfiglet import Figlet
 
 # Change these variables if you want!
-MAX_BOX_AREA = 1000000 # 10000 pixels
+MAX_BOX_AREA = 1000000 # pixels^2
 PRECISION = 0.6 # 60 % detection treshhold
 MAX_DETECTION = 5
+WIDTH = 1920
+HEIGTH = 1080
 
 # Main start here
 if __name__ == "__main__":
@@ -31,6 +36,8 @@ if __name__ == "__main__":
     print("Starting Program...")
 
     shared_variables = Shared_Variables()
+    shared_variables.height = HEIGTH
+    shared_variables.width = WIDTH
     detection_thread = Obj_Detection( id = 0, shared_variables=shared_variables).start()
     print("All threads started, will take a few seconds to load model, enjoy!")
 
@@ -39,6 +46,7 @@ if __name__ == "__main__":
     print("Max box size : "+ str(MAX_BOX_AREA))
     print("Detection precision treshhold : " + str(100*PRECISION)+"%")
     print("Max amount of detection : "+ str(MAX_DETECTION))
+    print("Screen size : " + str(WIDTH) +"x"+str(HEIGTH))
     print()
 
     print()
