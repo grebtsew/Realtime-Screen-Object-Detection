@@ -32,7 +32,12 @@ If you have `Python3 pip` installed you can install required packages by running
 # Run
 This tutorial takes you through the execution of this program.
 
-Run python script `main.py`
+1. Install requirements above
+2. Clone this repo or download it:
+```git
+git clone https://github.com/grebtsew/Realtime-Screen-Object-Detection.git
+```
+3. Run python script `main.py`
 
 # Screenshot
 See screenshot of program execution below:
