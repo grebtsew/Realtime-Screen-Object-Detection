@@ -40,6 +40,19 @@ class Screen_Streamer(Thread):
         Thread.__init__(self)
         self.shared_variables = shared_variables
 
+
+    def downscale(self, image):
+        image_size_treshhold = 720
+        height, width, channel = image.shape
+
+        if height > image_size_treshhold:
+            scale = height/image_size_treshhold
+
+            image = cv2.resize(image, (int(width/scale), int(height/scale)))
+
+        return image, scale
+
+
     def run(self):
         sct = mss()
         monitor = {'top': 0, 'left': 0, 'width': self.shared_variables.width, 'height': self.shared_variables.height}
@@ -48,7 +61,7 @@ class Screen_Streamer(Thread):
             if self.shared_variables.detection_ready:
                 img = Image.frombytes('RGB', (self.shared_variables.width, self.shared_variables.height), sct.grab(monitor).rgb)
                 #cv2.imshow('test', np.array(img))
-                self.shared_variables.OutputFrame = img
+                self.shared_variables.OutputFrame, scale = self.downscale(np.array(img))
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     cv2.destroyAllWindows()
                     break

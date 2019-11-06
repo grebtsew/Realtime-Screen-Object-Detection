@@ -25,6 +25,8 @@ PRECISION = 0.6 # 60 % detection treshhold
 MAX_DETECTION = 5
 WIDTH = 1920
 HEIGTH = 1080
+SHOW_ONLY = ["person"]
+
 
 # Main start here
 if __name__ == "__main__":
@@ -91,6 +93,10 @@ if __name__ == "__main__":
                     # Check category in bounds
                     if len(shared_variables.categorylist) >= classification[i]:
                         c = str(shared_variables.categorylist[int(classification[i]-1)]['name'])
+
+                    if len(SHOW_ONLY) > 0: # dont show wrong items
+                        if not SHOW_ONLY.__contains__(c):
+                            continue
 
                     if scores[i] > PRECISION: # precision treshhold
                         if w*h < MAX_BOX_AREA : # max box size check

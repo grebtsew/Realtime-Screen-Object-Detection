@@ -1,5 +1,7 @@
-tensorflow
-PyQt5
-numpy
-mss
-Image
+tensorflow==1.13.1
+PyQt5==5.12.2
+numpy==1.16.2
+mss==4.0.3
+Image==1.5.27
+opencv-python==3.4.1.15
+pyfiglet==0.7.6

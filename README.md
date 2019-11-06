@@ -16,12 +16,15 @@ be to track and discover objects on screen to assist users or perhaps to enhance
 the general user experience.
 
 # Install
-Several packages and programs are required to run this program.
+This program is written for **python3**. The required python3 libraries are the following:
 
-* `Python3`
 * `PyQt5` (used to overlay screen to show detections)
 * `Tensorflow` (object detection)
 * `mss` (capture screen stream)
+* `Image`
+* `opencv-python`
+* `pyfiglet`
+* `numpy`
 
 If you have `Python3 pip` installed you can install required packages by running:
 
@@ -38,6 +41,20 @@ This tutorial takes you through the execution of this program.
 git clone https://github.com/grebtsew/Realtime-Screen-Object-Detection.git
 ```
 3. Run python script `main.py`
+
+# Client Server
+An client Server solution has been added to further increase performability and accelerate detections.
+Test the implementation by running the `starter.py` file. The structure is explained below.
+
+
+For demo purposes the starter starts the three seperate processes `MssClient`, `QtServer` and `TfServer`.
+The `MssClient` reads screen images and send them to the `TfServer`. The `TfServer` will perform
+object detections on the received imaged and send detection boxes to the `QtServer`. The `QtServer`
+will display the incoming boxes from the `TfServer`. This will allow for seperation of the solution
+and also acceleration of the detections. I would recommend placing the `TfServer` on a pc with high performance
+ai hardware and let another pc only focus on displaying the detections.
+
+![demo](images/client_server.png)
 
 # Screenshot
 See screenshot of program execution below:
