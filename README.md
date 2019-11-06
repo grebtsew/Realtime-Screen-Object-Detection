@@ -43,7 +43,7 @@ git clone https://github.com/grebtsew/Realtime-Screen-Object-Detection.git
 3. Run python script `main.py`
 
 # Client Server
-An client Server solution has been added to further increase performability and accelerate detections.
+A client/server solution has been added to further increase performability and accelerate detections.
 Test the implementation by running the `starter.py` file. The structure is explained below.
 
 
