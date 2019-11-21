@@ -20,12 +20,15 @@ import numpy as np
 from pyfiglet import Figlet
 
 # Change these variables if you want!
-MAX_BOX_AREA = 1000000 # pixels^2
+MAX_BOX_AREA = 100000000 # pixels^2
 PRECISION = 0.6 # 60 % detection treshhold
 MAX_DETECTION = 5
 WIDTH = 1920
-HEIGTH = 1080
-SHOW_ONLY = ["person"]
+HEIGHT = 1080
+SHOW_ONLY = ["airplane"]
+
+def create_new_tracking_box( scores,c, shared_variables, box):
+    shared_variables.trackingboxes.append(screen_overlay_handler.TrackingBox(scores, c,shared_variables, box))
 
 
 # Main start here
@@ -38,7 +41,7 @@ if __name__ == "__main__":
     print("Starting Program...")
 
     shared_variables = Shared_Variables()
-    shared_variables.height = HEIGTH
+    shared_variables.height = HEIGHT
     shared_variables.width = WIDTH
     detection_thread = Obj_Detection( id = 0, shared_variables=shared_variables).start()
     print("All threads started, will take a few seconds to load model, enjoy!")
@@ -48,7 +51,7 @@ if __name__ == "__main__":
     print("Max box size : "+ str(MAX_BOX_AREA))
     print("Detection precision treshhold : " + str(100*PRECISION)+"%")
     print("Max amount of detection : "+ str(MAX_DETECTION))
-    print("Screen size : " + str(WIDTH) +"x"+str(HEIGTH))
+    print("Screen size : " + str(WIDTH) +"x"+str(HEIGHT))
     print()
 
     print()
@@ -67,47 +70,25 @@ if __name__ == "__main__":
     '''
     Show detection overlay work here!
     '''
-    try:
-        k = 0
-        list = []
-        while True:
-            if shared_variables.boxes is not None:
-                 # paint result here!
-                boxes = np.squeeze(shared_variables.boxes[0])
-                scores = np.squeeze(shared_variables.boxes[1])
-                classification = np.squeeze(shared_variables.boxes[2])
+    k = 0
+    shared_variables.splash_list = []
+    shared_variables.MAX_BOX_AREA = MAX_BOX_AREA
+    shared_variables.PRECISION = PRECISION
+    shared_variables.MAX_DETECTION = MAX_DETECTION
+    shared_variables.WIDTH = WIDTH
+    shared_variables.HEIGHT = HEIGHT
+    shared_variables.SHOW_ONLY = SHOW_ONLY
 
-                k = k+1
-                if k == MAX_DETECTION: # clear detections more often
-                    k = 0
-                    list = []
+    list = []
+    while True:
+        if len(shared_variables.create_queue) > 0:
+            for box in shared_variables.create_queue:
+                list.append(screen_overlay_handler.create_fancy_box(box[0],box[1],box[2][0],box[2][1],box[2][2],box[2][3]))
+                print("created box")
+            shared_variables.create_queue = []
+        time.sleep(1)
 
-                # loop through all detections
-                for i in range(0,len(np.squeeze(shared_variables.boxes[0]))):
-                    x = int(shared_variables.width*boxes[i][1])
-                    y = int(shared_variables.height*boxes[i][0])
-                    w = int(shared_variables.width*(boxes[i][3]-boxes[i][1]))
-                    h = int(shared_variables.height*(boxes[i][2]-boxes[i][0]))
-                    c = ""
-
-                    # Check category in bounds
-                    if len(shared_variables.categorylist) >= classification[i]:
-                        c = str(shared_variables.categorylist[int(classification[i]-1)]['name'])
-
-                    if len(SHOW_ONLY) > 0: # dont show wrong items
-                        if not SHOW_ONLY.__contains__(c):
-                            continue
-
-                    if scores[i] > PRECISION: # precision treshhold
-                        if w*h < MAX_BOX_AREA : # max box size check
-                            list.append(screen_overlay_handler.create_box_with_score_classification(scores[i],c,x,y,w,h))
-
-                #    time.sleep(0.1) might want to sleep if crash!
-
-            else:
-                time.sleep(0.1)
-    except KeyboardInterrupt:
-        pass
+    app.exec_()
 
 
     # Stop everything here

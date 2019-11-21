@@ -10,11 +10,14 @@ import time
 
 def create(score, classification, x,y,width,height):
     print("create")
-    splash_pix = QPixmap('../images/square.jpg')
+    splash_pix = QPixmap('../images/box2.png')
     splash_pix = splash_pix.scaled(width,height);
 
     splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
-    splash.setWindowOpacity(0.2)
+    #splash.setWindowOpacity(0.2)
+    splash.setWindowFlag(Qt.WindowStaysOnTopHint)
+    splash.setAttribute(Qt.WA_NoSystemBackground)
+    splash.setAttribute(Qt.WA_TranslucentBackground)
 
     label = QLabel( splash );
     label.setWordWrap( True );

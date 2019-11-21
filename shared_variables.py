@@ -17,17 +17,25 @@ import time
 # Global shared variables
 # an instace of this class share variables between system threads
 class Shared_Variables():
-
+    trackingboxes = []
     _initialized = 0
     width, height = 1920, 1080
     detection_ready = False
     category_index = None
     OutputFrame = None
+    frame = None
     boxes = None
     categorylist = []
     category_max = None
     stream_running = True
     detection_running = True
+    splash_list = []
+    move_queue = []
+    resize_queue = []
+    create_queue = []
+    remove_queue = []
+    tracking_list = []
+
 
     def __init__(self):
         Thread.__init__(self)
@@ -61,6 +69,7 @@ class Screen_Streamer(Thread):
             if self.shared_variables.detection_ready:
                 img = Image.frombytes('RGB', (self.shared_variables.width, self.shared_variables.height), sct.grab(monitor).rgb)
                 #cv2.imshow('test', np.array(img))
+                self.shared_variables.frame = np.array(img)
                 self.shared_variables.OutputFrame, scale = self.downscale(np.array(img))
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     cv2.destroyAllWindows()
