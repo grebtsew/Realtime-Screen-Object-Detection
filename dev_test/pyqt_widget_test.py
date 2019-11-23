@@ -361,7 +361,10 @@ class MainGUI(QMainWindow):
         self.oh_no()
 
     def progress_fn(self, n):
-        print("%d%% done" % n)
+        print(n)
+        self.list.append(TrackingBox(self.shared_variables, [random.randint(1,1000),random.randint(1,1000),random.randint(1,1000),random.randint(1,1000)]))
+
+        #print("%d%% done" % n)
 
     def execute_this_fn(self, progress_callback):
         #for n in range(0, 5):
@@ -369,13 +372,14 @@ class MainGUI(QMainWindow):
         #    progress_callback.emit(n*100/4)
         while True:
             time.sleep(5)
-
-#            progress_callback.emit(TrackingBox(self.shared_variables, [random.randint(1,1000),random.randint(1,1000),random.randint(1,1000),random.randint(1,1000)]))
+            progress_callback.emit()
+            #progress_callback.emit(TrackingBox(self.shared_variables, [random.randint(1,1000),random.randint(1,1000),random.randint(1,1000),random.randint(1,1000)]))
         return "Done."
 
     def print_output(self, s):
-        #self.list.append(TrackingBox(self.shared_variables, [random.randint(1,1000),random.randint(1,1000),random.randint(1,1000),random.randint(1,1000)]))
-        #print(s)
+
+        #time.sleep(5)
+        print(s)
         pass
 
     def thread_complete(self):
@@ -393,7 +397,7 @@ class MainGUI(QMainWindow):
         self.threadpool.start(worker)
 
     def new_tracking_box(self):
-        self.list.append(TrackingBox(self.shared_variables, [random.randint(1,1000),random.randint(1,1000),random.randint(1,1000),random.randint(1,1000)]))
+        #self.list.append(TrackingBox(self.shared_variables, [random.randint(1,1000),random.randint(1,1000),random.randint(1,1000),random.randint(1,1000)]))
 
         pass
 
@@ -402,4 +406,3 @@ class MainGUI(QMainWindow):
 app = QApplication([])
 MainGUI()
 app.exec_()
-print("do stuff")

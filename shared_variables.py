@@ -19,7 +19,7 @@ import time
 class Shared_Variables():
     trackingboxes = []
     _initialized = 0
-    width, height = 1920, 1080
+    WIDTH, HEIGHT = 1920, 1080
     detection_ready = False
     category_index = None
     OutputFrame = None
@@ -29,13 +29,7 @@ class Shared_Variables():
     category_max = None
     stream_running = True
     detection_running = True
-    splash_list = []
-    move_queue = []
-    resize_queue = []
-    create_queue = []
-    remove_queue = []
-    tracking_list = []
-
+    list = []
 
     def __init__(self):
         Thread.__init__(self)
@@ -63,11 +57,11 @@ class Screen_Streamer(Thread):
 
     def run(self):
         sct = mss()
-        monitor = {'top': 0, 'left': 0, 'width': self.shared_variables.width, 'height': self.shared_variables.height}
+        monitor = {'top': 0, 'left': 0, 'width': self.shared_variables.WIDTH, 'height': self.shared_variables.HEIGHT}
 
         while self.shared_variables.stream_running:
             if self.shared_variables.detection_ready:
-                img = Image.frombytes('RGB', (self.shared_variables.width, self.shared_variables.height), sct.grab(monitor).rgb)
+                img = Image.frombytes('RGB', (self.shared_variables.WIDTH, self.shared_variables.HEIGHT), sct.grab(monitor).rgb)
                 #cv2.imshow('test', np.array(img))
                 self.shared_variables.frame = np.array(img)
                 self.shared_variables.OutputFrame, scale = self.downscale(np.array(img))

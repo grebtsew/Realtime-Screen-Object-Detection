@@ -7,11 +7,12 @@ This is main function, used to start instances of the full program
 '''
 
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from shared_variables import Shared_Variables
-from obj_detection import Obj_Detection
+from detection import Detection
 import screen_overlay_handler
+from ThreadPool import *
 
 import time
 import sys
@@ -25,10 +26,70 @@ PRECISION = 0.6 # 60 % detection treshhold
 MAX_DETECTION = 5
 WIDTH = 1920
 HEIGHT = 1080
-SHOW_ONLY = ["airplane"]
+SHOW_ONLY = ["person"]
 
-def create_new_tracking_box( scores,c, shared_variables, box):
-    shared_variables.trackingboxes.append(screen_overlay_handler.TrackingBox(scores, c,shared_variables, box))
+class MainGUI(QMainWindow):
+
+    def initiate_shared_variables(self):
+        self.shared_variables = Shared_Variables()
+        self.shared_variables.MAX_BOX_AREA = MAX_BOX_AREA
+        self.shared_variables.PRECISION = PRECISION
+        self.shared_variables.MAX_DETECTION = MAX_DETECTION
+        self.shared_variables.WIDTH = WIDTH
+        self.shared_variables.HEIGHT = HEIGHT
+        self.shared_variables.SHOW_ONLY = SHOW_ONLY
+        self.shared_variables.list = []
+
+
+    def __init__(self):
+        super(MainGUI, self).__init__()
+
+        self.initiate_shared_variables()
+
+        # Create detection and load model
+        self.detection = Detection(shared_variables = self.shared_variables)
+
+        self.threadpool = QThreadPool()
+
+        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+
+        self.timer = QTimer()
+        self.timer.setInterval(5000)
+        self.timer.timeout.connect(self.print_output)
+        self.timer.start()
+
+
+        # Start Detection thread
+        self.start_worker()
+
+    def execute_this_fn(self, progress_callback):
+        while True:
+            time.sleep(2) # how often we should detect stuff
+            progress_callback.emit(self.detection.run()) # detect and emits boxes!
+        return "Done"
+
+    def create_tracking_boxes(self, boxes):
+        print("got detection now create trackerbox")
+        print(boxes)
+        for box in boxes:
+            self.shared_variables.list.append(TrackingBox(self.shared_variables, box[0],box[1],box[2]))
+
+    def print_output(self):
+        #print("ddd")
+        pass
+    def thread_complete(self):
+        #print("sss")
+        pass
+
+    def start_worker(self):
+        # Pass the function to execute
+        worker = Worker(self.execute_this_fn) # Any other args, kwargs are passed to the run function
+        worker.signals.progress.connect(self.create_tracking_boxes)
+        worker.signals.result.connect(self.print_output)
+        worker.signals.finished.connect(self.thread_complete)
+        # Execute
+
+        self.threadpool.start(worker)
 
 
 # Main start here
@@ -39,11 +100,6 @@ if __name__ == "__main__":
      "run object detection on it and show detections with PyQt5 overlay.")
 
     print("Starting Program...")
-
-    shared_variables = Shared_Variables()
-    shared_variables.height = HEIGHT
-    shared_variables.width = WIDTH
-    detection_thread = Obj_Detection( id = 0, shared_variables=shared_variables).start()
     print("All threads started, will take a few seconds to load model, enjoy!")
 
     print()
@@ -65,33 +121,8 @@ if __name__ == "__main__":
     print("This is free software, and you are welcome to redistribute it under certain conditions;")
     print("")
 
-    app = QApplication(sys.argv) # create window handler
+    app = QApplication([])
 
-    '''
-    Show detection overlay work here!
-    '''
-    k = 0
-    shared_variables.splash_list = []
-    shared_variables.MAX_BOX_AREA = MAX_BOX_AREA
-    shared_variables.PRECISION = PRECISION
-    shared_variables.MAX_DETECTION = MAX_DETECTION
-    shared_variables.WIDTH = WIDTH
-    shared_variables.HEIGHT = HEIGHT
-    shared_variables.SHOW_ONLY = SHOW_ONLY
-
-    list = []
-    while True:
-        if len(shared_variables.create_queue) > 0:
-            for box in shared_variables.create_queue:
-                list.append(screen_overlay_handler.create_fancy_box(box[0],box[1],box[2][0],box[2][1],box[2][2],box[2][3]))
-                print("created box")
-            shared_variables.create_queue = []
-        time.sleep(1)
+    MainGUI()
 
     app.exec_()
-
-
-    # Stop everything here
-    sys.exit(app.exec_())
-    shared_variables.stream_running = False
-    shared_variables.detection_running = False
