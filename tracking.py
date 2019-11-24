@@ -39,8 +39,7 @@ class Tracking():
     # Thread run function
     #
     def run(self):
-        self.frame = self.shared_variables.frame
-
+        self.frame = self.shared_variables.OutputFrame
 
         if self.frame is not None:
             if self.first_time:
@@ -87,13 +86,71 @@ class Tracking():
     # Calculate
         self.tracker_test, box = self.tracker.update(self.frame)
     # Update tracker box
+        #print(self.tracker_test, box, len(self.shared_variables.list))
+
         if self.tracker_test:
+            #cv2.waitKey(1)
+            #cv2.imshow("test", self.frame)
+            self.box = box
+            self.fail_counter = 0
+
+        else:
+            self.fail_counter+=1
+            if(self.fail_counter > self.shared_variables.MAX_TRACKING_MISSES): # missed fifteen frames
+                self.running = False
+
+class MultiTracking():
+    tracker_test = None
+    tracker = None
+    frame = None
+    running = True
+
+    fail_counter = 0
+
+    def __init__(self, shared_variables):
+        self.box = box
+        self.shared_variables = shared_variables
+
+    def run(self):
+        self.frame = self.shared_variables.OutputFrame
+
+        if self.frame is not None:
+            if self.first_time:
+                self.update_custom_tracker()
+                self.first_time = False
+            self.object_custom_tracking()
+
+    def create_custom_tracker(self):
+        self.Tracker = cv2.MultiTracker_create()
+
+    def update_custom_tracker(self):
+        self.create_custom_tracker()
+
+        #self.tracker_test = self.tracker.init( self.frame, self.box)
+
+    def get_box(self):
+        return self.box
+
+    def add_tracker(self, frame, box):
+        trackerType = "CSRT"
+
+        # Initialize MultiTracker
+        for bbox in bboxes:
+            self.tracker.add(createTrackerByName(trackerType), frame, box)
+
+    def object_custom_tracking(self):
+    # Calculate
+        self.tracker_test, box = self.tracker.update(self.frame)
+    # Update tracker box
+        #print(self.tracker_test, box)
+        if self.tracker_test:
+            cv2.waitKey(1)
+            cv2.imshow("test", self.frame)
             self.box = box
             self.fail_counter = 0
 
 
         else:
             self.fail_counter+=1
-            if(self.fail_counter > 5): # missed five frames
+            if(self.fail_counter > 2): # missed five frames
                 self.running = False
-#                print("done")

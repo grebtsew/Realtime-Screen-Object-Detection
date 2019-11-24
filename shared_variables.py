@@ -30,6 +30,8 @@ class Shared_Variables():
     stream_running = True
     detection_running = True
     list = []
+    DETECTION_SIZE = 640
+    DETECTION_SCALE = 0
 
     def __init__(self):
         Thread.__init__(self)
@@ -44,7 +46,7 @@ class Screen_Streamer(Thread):
 
 
     def downscale(self, image):
-        image_size_treshhold = 720
+        image_size_treshhold = self.shared_variables.DETECTION_SIZE
         height, width, channel = image.shape
 
         if height > image_size_treshhold:
@@ -57,14 +59,14 @@ class Screen_Streamer(Thread):
 
     def run(self):
         sct = mss()
-        monitor = {'top': 0, 'left': 0, 'width': self.shared_variables.WIDTH, 'height': self.shared_variables.HEIGHT}
+        monitor = {'top': self.shared_variables.OFFSET[0], 'left': self.shared_variables.OFFSET[1], 'width': self.shared_variables.WIDTH, 'height': self.shared_variables.HEIGHT}
 
         while self.shared_variables.stream_running:
             if self.shared_variables.detection_ready:
                 img = Image.frombytes('RGB', (self.shared_variables.WIDTH, self.shared_variables.HEIGHT), sct.grab(monitor).rgb)
                 #cv2.imshow('test', np.array(img))
-                self.shared_variables.frame = np.array(img)
-                self.shared_variables.OutputFrame, scale = self.downscale(np.array(img))
+                #self.shared_variables.frame = np.array(img)
+                self.shared_variables.OutputFrame, self.shared_variables.DETECTION_SCALE = self.downscale(np.array(img))
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     cv2.destroyAllWindows()
                     break

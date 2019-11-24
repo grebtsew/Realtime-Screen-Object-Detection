@@ -61,7 +61,7 @@ class Detection():
     def detection_exist(self, tracking_list, box):
 
         for tracking_box in tracking_list:
-            if(self.distance_between_boxes(tracking_box.get_box(), box)) < 1000:
+            if(self.distance_between_boxes(tracking_box.get_box(), box)) < 100:
                 return True
         return False
 
@@ -102,10 +102,10 @@ class Detection():
                 # loop through all detections
                 detection_list = []
                 for i in range(0,len(np.squeeze(self.shared_variables.boxes[0]))):
-                    x = int(self.shared_variables.WIDTH*boxes[i][1])
-                    y = int(self.shared_variables.HEIGHT*boxes[i][0])
-                    w = int(self.shared_variables.WIDTH*(boxes[i][3]-boxes[i][1]))
-                    h = int(self.shared_variables.HEIGHT*(boxes[i][2]-boxes[i][0]))
+                    x = int((self.shared_variables.WIDTH/self.shared_variables.DETECTION_SCALE)*boxes[i][1])
+                    y = int((self.shared_variables.HEIGHT/self.shared_variables.DETECTION_SCALE)*boxes[i][0])
+                    w = int((self.shared_variables.WIDTH/self.shared_variables.DETECTION_SCALE)*(boxes[i][3]-boxes[i][1]))
+                    h = int((self.shared_variables.HEIGHT/self.shared_variables.DETECTION_SCALE)*(boxes[i][2]-boxes[i][0]))
                     c = ""
 
                     # Check category in bounds
@@ -119,10 +119,10 @@ class Detection():
                     if scores[i] > self.shared_variables.PRECISION: # precision treshhold
                         if w*h < self.shared_variables.MAX_BOX_AREA : # max box size check
 
-                            if(not self.detection_exist(self.shared_variables.trackingboxes, (x,y,w,h))): # see if tracking box already exist for this detection
+                            if(not self.detection_exist(self.shared_variables.list, (x,y,w,h))): # see if tracking box already exist for this detection
                             #index = len(self.shared_variables.splash_list)
                             #self.create_new_tracking_box(scores[i],c,self.shared_variables,(x,y,w,h))
                                 detection_list.append( (scores[i],c,(x,y,w,h)))
                                 #self.shared_variables.create_queue.append((scores[i],c,(x,y,w,h)))
-                print(detection_list)
+                #print(detection_list)
                 return detection_list

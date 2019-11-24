@@ -2,7 +2,6 @@
 MAIN
 COPYRIGHT @ Grebtsew 2019
 
-
 This is main function, used to start instances of the full program
 '''
 
@@ -24,9 +23,13 @@ from pyfiglet import Figlet
 MAX_BOX_AREA = 100000000 # pixels^2
 PRECISION = 0.6 # 60 % detection treshhold
 MAX_DETECTION = 5
+MAX_TRACKING_MISSES = 30
 WIDTH = 1920
 HEIGHT = 1080
 SHOW_ONLY = ["person"]
+OFFSET = (0,0)
+DETECTION_SIZE = 480
+DETECTION_DURATION = 2
 
 class MainGUI(QMainWindow):
 
@@ -39,7 +42,10 @@ class MainGUI(QMainWindow):
         self.shared_variables.HEIGHT = HEIGHT
         self.shared_variables.SHOW_ONLY = SHOW_ONLY
         self.shared_variables.list = []
-
+        self.shared_variables.OFFSET = OFFSET
+        self.shared_variables.DETECTION_SIZE = DETECTION_SIZE
+        self.shared_variables.DETECTION_DURATION = DETECTION_DURATION
+        self.shared_variables.MAX_TRACKING_MISSES = MAX_TRACKING_MISSES
 
     def __init__(self):
         super(MainGUI, self).__init__()
@@ -53,30 +59,46 @@ class MainGUI(QMainWindow):
 
         print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
+        """
         self.timer = QTimer()
-        self.timer.setInterval(5000)
+        self.timer.setInterval(10)
         self.timer.timeout.connect(self.print_output)
         self.timer.start()
-
+        """
 
         # Start Detection thread
         self.start_worker()
 
     def execute_this_fn(self, progress_callback):
         while True:
-            time.sleep(2) # how often we should detect stuff
+            time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
             progress_callback.emit(self.detection.run()) # detect and emits boxes!
         return "Done"
 
     def create_tracking_boxes(self, boxes):
-        print("got detection now create trackerbox")
-        print(boxes)
+        #print("got detection now create trackerbox")
+        #print(boxes)
+
         for box in boxes:
-            self.shared_variables.list.append(TrackingBox(self.shared_variables, box[0],box[1],box[2]))
+            if len(self.shared_variables.list) < MAX_DETECTION:
+                self.shared_variables.list.append(screen_overlay_handler.TrackingBox(len(self.shared_variables.list), self.shared_variables, box[0],box[1],box[2]))
 
     def print_output(self):
-        #print("ddd")
+        """
+        remove = []
+        index = 0
+        for box in self.shared_variables.list:
+            if box.done:
+                box.finish(self)
+                remove.insert(0,index)
+            index += 1
+
+        for i in remove:
+            del self.shared_variables.list[i]
+            print(self.shared_variables.list)
+        """
         pass
+
     def thread_complete(self):
         #print("sss")
         pass
@@ -90,7 +112,6 @@ class MainGUI(QMainWindow):
         # Execute
 
         self.threadpool.start(worker)
-
 
 # Main start here
 if __name__ == "__main__":
@@ -107,7 +128,14 @@ if __name__ == "__main__":
     print("Max box size : "+ str(MAX_BOX_AREA))
     print("Detection precision treshhold : " + str(100*PRECISION)+"%")
     print("Max amount of detection : "+ str(MAX_DETECTION))
+    print("Max amount of tracking misses : "+ str(MAX_TRACKING_MISSES))
+    print("Do detections every : "+str(DETECTION_DURATION) + " second")
+    print("Rescale image detection size : " +str(DETECTION_SIZE))
+    print("Classifications : " + str(SHOW_ONLY) + " * if empty all detections are allowed.")
     print("Screen size : " + str(WIDTH) +"x"+str(HEIGHT))
+    print("Screen offset : "+str(OFFSET))
+
+    # TODO show all settings made
     print()
 
     print()

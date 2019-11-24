@@ -1,9 +1,11 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from ThreadPool import *
 
 from tracking import Tracking
 
+import threading
 import sys
 import time
 
@@ -16,9 +18,9 @@ This file contains functions for showing overlay detections
 
 class TrackingBox(QSplashScreen):
     splash_pix = None
+    done = False
 
-
-    def __init__(self, shared_variables, score, classification, box, *args, **kwargs):
+    def __init__(self, id, shared_variables, score, classification, box, *args, **kwargs):
         super(TrackingBox, self).__init__(*args, **kwargs)
         self.shared_variables = shared_variables
         self.counter = 0
@@ -26,10 +28,9 @@ class TrackingBox(QSplashScreen):
         self.y = box[1]
         self.width = box[2]
         self.height = box[3]
-
-
+        self.id = id
         self.splash_pix = QPixmap('./images/box2.png')
-        self.splash_pix = self.splash_pix.scaled(self.width,self.height);
+        self.splash_pix = self.splash_pix.scaled(round(self.width*self.shared_variables.DETECTION_SCALE),round(self.height*self.shared_variables.DETECTION_SCALE));
         self.setPixmap(self.splash_pix)
 
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
@@ -49,7 +50,7 @@ class TrackingBox(QSplashScreen):
 
         self.threadpool = QThreadPool()
 
-        print("New Box Created at ",self.x,self.y, " Size ", self.width, self.height)
+        #print("New Box Created at ",self.x,self.y, " Size ", self.width, self.height)
 
         self.start_worker()
 
@@ -58,14 +59,24 @@ class TrackingBox(QSplashScreen):
         pass
 
     def execute_this_fn(self, progress_callback):
-        self.tracking.run()
+
+        if(not self.tracking.running):
+            if not self.done: # Remove ourself from gui list
+                self.shared_variables.list.remove(self)
+                self.done = True
+                self.threadpool.cancel
+        else:
+            self.tracking.run()
+
         return "Done."
 
-    def print_output(self, s):
-        self.repaint_size(self.tracking.box[2], self.tracking.box[3])
-        self.move(self.tracking.box[0], self.tracking.box[1])
-        #next tracking
 
+    def print_output(self, s):
+        #print(str(self.id))
+        self.hide()
+        self.repaint_size(round(self.tracking.box[2]*self.shared_variables.DETECTION_SCALE), round(self.tracking.box[3]*self.shared_variables.DETECTION_SCALE))
+        self.move(round(self.tracking.box[0]*self.shared_variables.DETECTION_SCALE), round(self.tracking.box[1]*self.shared_variables.DETECTION_SCALE))
+        self.show()
 
     def thread_complete(self):
         #print("THREAD COMPLETE!")
@@ -84,9 +95,10 @@ class TrackingBox(QSplashScreen):
     def repaint_size(self, width, height):
         #splash_pix = QPixmap('../images/box2.png')
         self.splash_pix = self.splash_pix.scaled(width,height);
-        #self.setPixmap(self.splash_pix)
+        self.setPixmap(self.splash_pix)
 
-    def get_box():
+
+    def get_box(self):
         return self.tracking.box
 
 
