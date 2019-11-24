@@ -2,6 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
+import numpy as np
 import time
 import traceback, sys
 # Tracking thread
@@ -33,6 +34,20 @@ class Tracking():
     def __init__(self,   box,  shared_variables):
         self.box = box
         self.shared_variables = shared_variables
+
+        self.kalman = cv2.KalmanFilter(4, 2, 0)
+        self.kalman.measurementMatrix = np.array([[1,0,0,0],
+                                             [0,1,0,0]],np.float32)
+
+        self.kalman.transitionMatrix = np.array([[1,0,1,0],
+                                            [0,1,0,1],
+                                            [0,0,1,0],
+                                            [0,0,0,1]],np.float32)
+
+        self.kalman.processNoiseCov = np.array([[1,0,0,0],
+                                           [0,1,0,0],
+                                           [0,0,1,0],
+                                           [0,0,0,1]],np.float32) * 0.03
 
 
     # Run
@@ -91,7 +106,11 @@ class Tracking():
         if self.tracker_test:
             #cv2.waitKey(1)
             #cv2.imshow("test", self.frame)
-            self.box = box
+            current_measurement = np.array([[np.float32(box[0])], [np.float32(box[1])]])
+            self.kalman.correct(current_measurement)
+            prediction = self.kalman.predict()
+            #print(int(prediction[0]), int(prediction[1]))
+            self.box = [int(prediction[0]), int(prediction[1]), box[2], box[3]]
             self.fail_counter = 0
 
         else:

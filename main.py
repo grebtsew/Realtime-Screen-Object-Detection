@@ -134,8 +134,6 @@ if __name__ == "__main__":
     print("Classifications : " + str(SHOW_ONLY) + " * if empty all detections are allowed.")
     print("Screen size : " + str(WIDTH) +"x"+str(HEIGHT))
     print("Screen offset : "+str(OFFSET))
-
-    # TODO show all settings made
     print()
 
     print()
