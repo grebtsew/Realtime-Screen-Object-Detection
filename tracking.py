@@ -27,7 +27,7 @@ class Tracking():
     start_time = None
     end_time = None
     first_time = True
-
+    first = True
     # Initiate thread
     # parameters name , shared_variables reference
     #
@@ -106,6 +106,15 @@ class Tracking():
         if self.tracker_test:
             #cv2.waitKey(1)
             #cv2.imshow("test", self.frame)
+
+            if self.first:
+                A = self.kalman.statePost
+                A[0:4] = np.array([[np.float32(box[0])], [np.float32(box[1])],[0],[0]])
+                # A[4:8] = 0.0
+                self.kalman.statePost = A
+                self.kalman.statePre = A
+                self.first = False
+
             current_measurement = np.array([[np.float32(box[0])], [np.float32(box[1])]])
             self.kalman.correct(current_measurement)
             prediction = self.kalman.predict()
