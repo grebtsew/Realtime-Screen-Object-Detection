@@ -2,7 +2,7 @@
   <img width="460" height="300" src="images/logo.png">
 </p>
 
-![demo](images/demo1.gif)
+![demo](images/demo2.gif)
 
 `NOTE:` I use low framerate and low precision object detection to save some
 power on my laptop, feel free to change models, detection and remove loop delays.
@@ -56,11 +56,16 @@ ai hardware and let another pc only focus on displaying the detections.
 
 ![demo](images/client_server.png)
 
+# Deprecated demo
+![demo](images/demo1.gif)
+
+
 # Screenshot
 See screenshot of program execution below:
 ![screenshot](images/screenshot.png)
 
 # License
 [MIT](LICENSE)
+
 
 COPYRIGHT @ Grebtsew 2019
