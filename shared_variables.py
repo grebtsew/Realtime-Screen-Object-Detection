@@ -3,13 +3,11 @@ COPYRIGHT @ Grebtsew 2019
 
 This file contains a shared variables class and a mss screen stream capture class
 '''
-
-
 # Shared variables between threads
 from mss import mss
 from PIL import Image
 from threading import Thread
-
+        
 import numpy as np
 import cv2
 import time
@@ -19,6 +17,8 @@ import time
 class Shared_Variables():
     trackingboxes = []
     _initialized = 0
+    OFFSET = (0,0)
+    HTTP_SERVER = False
     WIDTH, HEIGHT = 1920, 1080
     detection_ready = False
     category_index = None
@@ -37,7 +37,7 @@ class Shared_Variables():
         Thread.__init__(self)
         self._initialized = 1
         Screen_Streamer(shared_variables=self).start()
-
+        
 
 class Screen_Streamer(Thread):
     def __init__(self, shared_variables = None ):

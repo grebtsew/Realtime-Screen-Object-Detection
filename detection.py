@@ -74,7 +74,7 @@ class Detection():
     def run(self):
         if self.shared_variables.OutputFrame is not None:
             frame = self.shared_variables.OutputFrame
-
+            
             if( frame is not None):
                 image_np = frame
                 # Expand dimensions since the model expects images to have shape: [1, None, None, 3]

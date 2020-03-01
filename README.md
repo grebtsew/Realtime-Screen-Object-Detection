@@ -56,6 +56,24 @@ ai hardware and let another pc only focus on displaying the detections.
 
 ![demo](images/client_server.png)
 
+# Use detection request Mode
+In this mode the program will wait for requests from other clients and show the requested objects.
+Example client message:
+```
+# Data to add persons to detection
+data = {
+    'value': "person",
+    'type': 'add',
+    'api_crypt':"password-1"
+      }
+
+# Data to remove dogs from detection
+data = {
+    'value': "dog",
+    'type': 'remove',
+    'api_crypt':"password-1"
+      }
+```
 # Deprecated demo
 ![demo](images/demo1.gif)
 

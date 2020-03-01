@@ -6,7 +6,6 @@ This server will be used in a special mode of the program.
 This server will receive HTTP post requests and send the data to flask
 """
 from threading import Thread
-from data_stream import send_request
 import http.server
 import json
 from functools import partial
@@ -14,11 +13,10 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 class S(BaseHTTPRequestHandler):
 
-    def __init__(self, CRYPT="password-1", *args, **kwargs):
-        self.CRYPT = CRYPT
+    def __init__(self,shared_variables, *args, **kwargs):
+        self.CRYPT = "password-1"
+        self.shared_variables = shared_variables
         super().__init__(*args, **kwargs)
-
-
 
     def _set_response(self):
         self.send_response(200, "ok")
@@ -35,6 +33,9 @@ class S(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self._set_response()
 
+    def clear_timer():
+        self.shared_variables.SHOW_ONLY = []
+
     def do_POST(self):
         #print(self.client_address,self.headers)
 
@@ -45,29 +46,43 @@ class S(BaseHTTPRequestHandler):
             # decode incoming data // see if password is correct here!
             try:
                 data = json.loads(post_data)
-
+                print(data)
+                """
+                Data struct:
+                    data = {
+                'value': "person",
+                'type': 'add',
+                'api_crypt':"password-1"
+                    }
+                """
                 if data['api_crypt'] :
                     if data['api_crypt'] == self.CRYPT:
-                        print("Sending request " + str(data["value"]))
-                        send_request(id = data["id"], data=data["value"], type =safe(data, "type"), active_points =safe(data, "active_points"),
-                        _label=safe(data, "label"), _legend=safe(data, "legend"), _width = safe(data, "width"), _height = safe(data, "height"),
-                        _name = safe(data, "name"), fill = safe(data, "fill"), backgroundColor = safe(data, "backgroundColor"),
-                        borderColor = safe(data, "borderColor"))
+                        if data["value"]:
+                            if data["type"] == "remove":
+                                print("Removed Class : "+ str(data["value"]))
+                                for box in self.shared_variables.list:
+                                    if box.classification == data["value"]:
+                                        box.remove() # stop running boxes!
+                                if data["value"] in self.shared_variables.SHOW_ONLY:
+                                    self.shared_variables.SHOW_ONLY.remove(data["value"])
+                            else:
+                                if not data["value"] in self.shared_variables.SHOW_ONLY:
+                                    print("Added Class : "+ str(data["value"]))
+                                    self.shared_variables.SHOW_ONLY.append(data["value"])
             except Exception as e:
                 print("ERROR: "+str(e))
         self._set_response()
 
 class HTTPserver(Thread):
 
-    def __init__(self):
+    def __init__(self, shared_variables):
         super().__init__()
-
+        self.shared_variables = shared_variables
     def run(self):
-        from config_handler import ConfigHandler
-        (HOST, PORT, CRYPT) = ConfigHandler().get_all("HTTPServer") # pylint: disable=unbalanced-tuple-unpacking
-        server_address = (str(HOST),int(PORT))
-        httpd = HTTPServer(server_address, partial(S, CRYPT))
+        server_address = ("127.0.0.1",5000)
+        httpd = HTTPServer(server_address, partial(S, self.shared_variables))
         try:
+            print("HTTP Server Started!")
             httpd.serve_forever()
         except KeyboardInterrupt:
             pass

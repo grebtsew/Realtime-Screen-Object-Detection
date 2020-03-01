@@ -21,15 +21,17 @@ from pyfiglet import Figlet
 
 # Change these variables if you want!
 MAX_BOX_AREA = 100000000 # pixels^2
-PRECISION = 0.6 # 60 % detection treshhold
+PRECISION = 0.7 # 60 % detection treshhold
 MAX_DETECTION = 5
 MAX_TRACKING_MISSES = 30
 WIDTH = 1920
 HEIGHT = 1080
-SHOW_ONLY = ["person"]
+SHOW_ONLY = ["person"] # Start Empty, receive items to show
 OFFSET = (0,0)
 DETECTION_SIZE = 480
 DETECTION_DURATION = 2
+RESET_SHOW_ONLY_ON_START=False
+HTTP_SERVER = False
 
 class MainGUI(QMainWindow):
 
@@ -46,6 +48,15 @@ class MainGUI(QMainWindow):
         self.shared_variables.DETECTION_SIZE = DETECTION_SIZE
         self.shared_variables.DETECTION_DURATION = DETECTION_DURATION
         self.shared_variables.MAX_TRACKING_MISSES = MAX_TRACKING_MISSES
+        self.shared_variables.HTTP_SERVER = HTTP_SERVER
+
+        if RESET_SHOW_ONLY_ON_START:
+            self.shared_variables.SHOW_ONLY = []
+
+        # Start webserver
+        if HTTP_SERVER:
+            from http_server import HTTPserver
+            HTTPserver(shared_variables=self.shared_variables).start()
 
     def __init__(self):
         super(MainGUI, self).__init__()
@@ -71,8 +82,13 @@ class MainGUI(QMainWindow):
 
     def execute_this_fn(self, progress_callback):
         while True:
-            time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
-            progress_callback.emit(self.detection.run()) # detect and emits boxes!
+            if len(self.shared_variables.SHOW_ONLY) == 0:
+                time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
+                
+            else:
+                #print("Detection...")
+                time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
+                progress_callback.emit(self.detection.run()) # detect and emits boxes!
         return "Done"
 
     def create_tracking_boxes(self, boxes):
@@ -134,6 +150,7 @@ if __name__ == "__main__":
     print("Classifications : " + str(SHOW_ONLY) + " * if empty all detections are allowed.")
     print("Screen size : " + str(WIDTH) +"x"+str(HEIGHT))
     print("Screen offset : "+str(OFFSET))
+    print("Activate HTTPserver : " + str(HTTP_SERVER))
     print()
 
     print()

@@ -22,6 +22,7 @@ class TrackingBox(QSplashScreen):
 
     def __init__(self, id, shared_variables, score, classification, box, *args, **kwargs):
         super(TrackingBox, self).__init__(*args, **kwargs)
+        self.classification = classification
         self.shared_variables = shared_variables
         self.counter = 0
         self.x = box[0]
@@ -40,7 +41,7 @@ class TrackingBox(QSplashScreen):
         label = QLabel( self )
         label.setWordWrap( True )
         label.move(30,30)
-        label.setStyleSheet(" color: rgba(0, 100, 200); font-size: 15pt; ")
+        label.setStyleSheet(" color: rgb(0, 100, 200); font-size: 15pt; ")
 
         label.setText( str(int(100*score))+"%" + " " + classification );
         self.move(self.x,self.y)
@@ -57,6 +58,11 @@ class TrackingBox(QSplashScreen):
     def progress_fn(self, n):
         #print("%d%% done" % n)
         pass
+    
+    def remove(self):
+        self.shared_variables.list.remove(self)
+        self.done = True
+        self.threadpool.cancel
 
     def execute_this_fn(self, progress_callback):
 
@@ -201,7 +207,7 @@ def create_fancy_box(score, classification,  x,y,width,height):
     label = QLabel( splash );
     label.setWordWrap( True );
     label.move(30,30)
-    label.setStyleSheet(" color: rgba(0, 100, 200); font-size: 30pt; ")
+    label.setStyleSheet(" color: rgb(0, 100, 200); font-size: 30pt; ")
     label.setText( str(int(100*score))+"%" + " " + classification );
 
 
