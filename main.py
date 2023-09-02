@@ -130,7 +130,7 @@ class MainGUI(QMainWindow):
 # Main start here
 if __name__ == "__main__":
     f = Figlet(font='slant')
-    print (f.renderText('Realtime Screen stream with Ai detetion Overlay'))
+    print (f.renderText('Realtime Screen stream with Ai detection Overlay'))
     print("This program starts several threads that stream pc screen and" +
      "run object detection on it and show detections with PyQt5 overlay.")
 
@@ -153,15 +153,15 @@ if __name__ == "__main__":
 
     print()
     print("----- Usage -----")
-    print("Exit by typeing : 'ctrl+c'")
+    print("Exit by typing : 'ctrl+c'")
     print()
 
     print("")
-    print("Realtime-Screen-stream-with-Ai-detetion-Overlay Copyright (C) 2019  Daniel Westberg")
+    print("Realtime-Screen-stream-with-Ai-detection-Overlay Copyright (C) 2019  Daniel Westberg")
     print("This program comes with ABSOLUTELY NO WARRANTY;")
     print("This is free software, and you are welcome to redistribute it under certain conditions;")
     print("")
-
+    exit()
     app = QApplication([])
 
     MainGUI()
