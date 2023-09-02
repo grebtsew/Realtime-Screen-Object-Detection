@@ -6,7 +6,7 @@ import math
 
 from math import hypot
 import tensorflow as tf
-from utils import label_map_util
+#from utils import label_map_util
 import time
 import numpy as np
 from threading import Thread

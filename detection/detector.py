@@ -1,0 +1,3 @@
+"""
+Abstract Object Detector Class
+"""

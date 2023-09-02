@@ -9,7 +9,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from shared_variables import Shared_Variables
-from detection import Detection
+#from detection import Detection
 import screen_overlay_handler
 from ThreadPool import *
 
@@ -53,7 +53,7 @@ class MainGUI(QMainWindow):
 
         # Start webserver
         if HTTP_SERVER:
-            from http_server import HTTPserver
+            from api.http_server import HTTPserver
             HTTPserver(shared_variables=self.shared_variables).start()
 
     def __init__(self):
@@ -62,7 +62,7 @@ class MainGUI(QMainWindow):
         self.initiate_shared_variables()
 
         # Create detection and load model
-        self.detection = Detection(shared_variables = self.shared_variables)
+        #self.detection = Detection(shared_variables = self.shared_variables)
 
         self.threadpool = QThreadPool()
 
@@ -86,7 +86,7 @@ class MainGUI(QMainWindow):
             else:
                 #print("Detection...")
                 time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
-                progress_callback.emit(self.detection.run()) # detect and emits boxes!
+                #progress_callback.emit(self.detection.run()) # detect and emits boxes!
         return "Done"
 
     def create_tracking_boxes(self, boxes):
