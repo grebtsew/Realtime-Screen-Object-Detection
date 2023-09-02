@@ -14,8 +14,6 @@ import screen_overlay_handler
 from ThreadPool import *
 
 import time
-import sys
-import numpy as np
 
 from pyfiglet import Figlet
 
