@@ -1,10 +1,10 @@
 **NOTE**: Current implementation is under construction, and currently not working due to version incompatibility, when working it will be published in a new release! TODO:
 
 <p align="center">
-  <img width="460" height="300" src="images/logo.png">
+  <img width="460" height="300" src="docs/logo.png">
 </p>
 
-![demo](images/demo2.gif)
+![demo](docs/demo2.gif)
 
 `NOTE:` I use low framerate and low precision object detection to save some
 power on my laptop, feel free to change models, detection and remove loop delays.
@@ -56,7 +56,7 @@ will display the incoming boxes from the `TfServer`. This will allow for seperat
 and also acceleration of the detections. I would recommend placing the `TfServer` on a pc with high performance
 ai hardware and let another pc only focus on displaying the detections.
 
-![demo](images/client_server.png)
+![demo](docs/client_server.png)
 
 # Use detection request Mode
 In this mode the program will wait for requests from other clients and show the requested objects.
@@ -77,12 +77,12 @@ data = {
       }
 ```
 # Deprecated demo
-![demo](images/demo1.gif)
+![demo](docs/demo1.gif)
 
 
 # Screenshot
 See screenshot of program execution below:
-![screenshot](images/screenshot.png)
+![screenshot](docs/screenshot.png)
 
 # License
 [MIT](LICENSE)

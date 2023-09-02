@@ -7,3 +7,4 @@ pyfiglet==0.8.post1
 mss==9.0.1
 pillow==10.0.0
 black==23.7.0
+pytest==7.4.0
