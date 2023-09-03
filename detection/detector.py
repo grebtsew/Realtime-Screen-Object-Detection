@@ -1,3 +1,0 @@
-"""
-Abstract Object Detector Class
-"""

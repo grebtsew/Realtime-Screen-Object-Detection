@@ -12,9 +12,15 @@ import numpy as np
 import cv2
 import time
 
+from ml.torch.yolov5 import YOLOv5
+from ml.tensorflow.ssd import SSD
+from ml.opencv.haar_cascades import HAAR_CASCADES
 # Global shared variables
 # an instace of this class share variables between system threads
 class Shared_Variables():
+
+    model_choise = YOLOv5 # YOLOv5 | SSD | HAAR_CASCADES
+
     trackingboxes = []
     _initialized = 0
     OFFSET = (0,0)
