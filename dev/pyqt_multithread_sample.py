@@ -1,7 +1,7 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-
+import logging
 import time
 import traceback, sys
 # Tracking thread
@@ -294,7 +294,7 @@ class TrackingBox(QSplashScreen):
 
 
         self.threadpool = QThreadPool()
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+        logging.info("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
         self.timer = QTimer()
         self.timer.setInterval(100)
@@ -302,7 +302,7 @@ class TrackingBox(QSplashScreen):
         self.timer.start()
 
     def progress_fn(self, n):
-        print("%d%% done" % n)
+        logging.info("%d%% done" % n)
 
     def execute_this_fn(self, progress_callback):
         for n in range(0, 5):
@@ -312,7 +312,7 @@ class TrackingBox(QSplashScreen):
         return "Done."
 
     def print_output(self, s):
-        print(s)
+        logging.info(s)
 
     def thread_complete(self):
         print("THREAD COMPLETE!")

@@ -1,11 +1,11 @@
 """
 Class for specific usage of tensorflow 2.X
 """
-from detector import Detector
+from ml import detector as d
 
 import cv2
 
-class OPENCVDetector(Detector):
+class OPENCVDetector(d.Detector):
     def __init__(self):
         self.model = None
 

@@ -6,6 +6,7 @@ A simple object detection implementation
 import sys
 sys.path.insert(0,'..')
 
+import logging
 import tensorflow as tf
 from utils import label_map_util
 import numpy as np
@@ -33,12 +34,12 @@ class Obj_Detection(Thread):
         #self.shared_variables.category_index = category_index
 
         self.sess = tf.Session(graph=self.detection_graph)
-        print("Model successfully loaded! Detection Active!")
+        logging.info("Model successfully loaded! Detection Active!")
 
 
     def load_model(self):
         # Load model
-        print("Loading model")
+        logging.info("Loading model")
         detection_graph = tf.Graph()
         with detection_graph.as_default():
             od_graph_def = tf.GraphDef()

@@ -10,6 +10,7 @@ import http.server
 import json
 from functools import partial
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import logging
 
 class S(BaseHTTPRequestHandler):
 
@@ -37,7 +38,7 @@ class S(BaseHTTPRequestHandler):
         self.shared_variables.SHOW_ONLY = []
 
     def do_POST(self):
-        #print(self.client_address,self.headers)
+        logging.debug(self.client_address,self.headers)
 
         if self.headers['Content-Length']:
 
@@ -46,7 +47,7 @@ class S(BaseHTTPRequestHandler):
             # decode incoming data // see if password is correct here!
             try:
                 data = json.loads(post_data)
-                print(data)
+                logging.debug(data)
                 """
                 Data struct:
                     data = {
@@ -59,7 +60,7 @@ class S(BaseHTTPRequestHandler):
                     if data['api_crypt'] == self.CRYPT:
                         if data["value"]:
                             if data["type"] == "remove":
-                                print("Removed Class : "+ str(data["value"]))
+                                logging.debug("Removed Class : "+ str(data["value"]))
                                 for box in self.shared_variables.list:
                                     if box.classification == data["value"]:
                                         box.remove() # stop running boxes!
@@ -67,10 +68,10 @@ class S(BaseHTTPRequestHandler):
                                     self.shared_variables.SHOW_ONLY.remove(data["value"])
                             else:
                                 if not data["value"] in self.shared_variables.SHOW_ONLY:
-                                    print("Added Class : "+ str(data["value"]))
+                                    logging.debug("Added Class : "+ str(data["value"]))
                                     self.shared_variables.SHOW_ONLY.append(data["value"])
             except Exception as e:
-                print("ERROR: "+str(e))
+                logging.error("ERROR: "+str(e))
         self._set_response()
 
 class HTTPserver(Thread):
@@ -82,7 +83,7 @@ class HTTPserver(Thread):
         server_address = ("127.0.0.1",5000)
         httpd = HTTPServer(server_address, partial(S, self.shared_variables))
         try:
-            print("HTTP Server Started!")
+            logging.info("HTTP Server Started!")
             httpd.serve_forever()
         except KeyboardInterrupt:
             pass

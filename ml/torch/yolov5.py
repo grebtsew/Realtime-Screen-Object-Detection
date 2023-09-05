@@ -1,10 +1,11 @@
 import torch
 import requests
+import logging
 from pathlib import Path
 
-from torch_detector import TorchDetector
+from ml.torch import torch_detector as td
 
-class YOLOv5(TorchDetector):
+class YOLOv5(td.TorchDetector):
     def __init__(self, model_path, config_file):
         super().__init__()
         self.model_path = model_path
@@ -19,13 +20,13 @@ class YOLOv5(TorchDetector):
         # Download if not exist:
         if not Path(model_path).is_file():
             model_url = "https://github.com/ultralytics/yolov5/releases/download/v5.0/yolov5s.pt"
-            print(f"Downloading YOLOv5 model from {model_url}...")
+            logging.info(f"Downloading YOLOv5 model from {model_url}...")
             response = requests.get(model_url, stream=True)
             response.raise_for_status()
             with open(model_path, "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
-            print(f"Model downloaded to {model_path}")
+            logging.info(f"Model downloaded to {model_path}")
 
 
         # Load model
@@ -44,7 +45,7 @@ class YOLOv5(TorchDetector):
         # Access detected objects and their attributes
         detected_objects = results.pred[0]
         for obj in detected_objects:
-            print(f"Class: {obj[5]}, Confidence: {obj[4]}")
+            logging.debug(f"Class: {obj[5]}, Confidence: {obj[4]}")
         
         # YOLOv5 specific prediction logic
         #prediction = super().predict(image)

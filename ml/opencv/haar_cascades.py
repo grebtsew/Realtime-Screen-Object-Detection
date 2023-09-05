@@ -1,6 +1,7 @@
-from opencv_detector import OPENCVDetector
+from ml.opencv import opencv_detector as od
 
-class HAAR_CASCADES(TFDetector):
+
+class HAAR_CASCADES(od.OPENCVDetector):
     def __init__(self, model_path, label_map_path):
         super().__init__()
         self.model_path = model_path

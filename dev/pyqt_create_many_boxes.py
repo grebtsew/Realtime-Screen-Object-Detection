@@ -6,10 +6,11 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import *
 import time
+import logging
 
 
 def create(score, classification, x,y,width,height):
-    print("create")
+    logging.info("create")
     splash_pix = QPixmap('../images/box2.png')
     splash_pix = splash_pix.scaled(width,height);
 
@@ -28,9 +29,10 @@ def create(score, classification, x,y,width,height):
     splash.move(x,y)
 
     splash.show()
+    
+    logging.info("done")
     return splash
 
-    print("done")
 
 if __name__ == '__main__':
 

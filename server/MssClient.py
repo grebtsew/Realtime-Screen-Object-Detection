@@ -8,6 +8,7 @@ import numpy as np
 import pickle
 import struct
 import time
+import logging
 
 """
 COPYRIGHT @ Grebtsew 2019
@@ -32,9 +33,9 @@ class MssClient(threading.Thread):
         self.port = port
         self.s = socket.socket()
         #self.demo_start_tfserver()
-        print("MSS Client trying to connect to Tensorflow Server ", self.address, self.port)
+        logging.info("MSS Client trying to connect to Tensorflow Server ", self.address, self.port)
         self.s.connect((self.address,self.port))
-        print("SUCCESS : Mss Client successfully connected to Tensorflow Server!")
+        logging.info("SUCCESS : Mss Client successfully connected to Tensorflow Server!")
         self.encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
 
     def demo_start_tfserver(self):
@@ -46,7 +47,7 @@ class MssClient(threading.Thread):
 
         data = pickle.dumps(frame, 0)
         size = len(data)
-        #print("Sending Image of size ", size)
+        logging.debug("Sending Image of size ", size)
         self.s.sendall(struct.pack(">L", size) + data)
 
     def run(self):

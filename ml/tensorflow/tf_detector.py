@@ -1,11 +1,12 @@
 """
 Class for specific usage of tensorflow 2.X
 """
-from detector import Detector
+from ml import detector as d
 
 import tensorflow as tf
+import keras
 
-class TFDetector(Detector):
+class TFDetector(d.Detector):
     def __init__(self):
         self.model = None
 

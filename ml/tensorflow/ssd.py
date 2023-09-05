@@ -1,6 +1,6 @@
-from tf_detector import TFDetector
+from ml.tensorflow import tf_detector as tf
 
-class SSD(TFDetector):
+class SSD(tf.TFDetector):
     def __init__(self, model_path, label_map_path):
         super().__init__()
         self.model_path = model_path

@@ -1,10 +1,11 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from ThreadPool import *
+from utils.ThreadPool import *
 
-from tracking import Tracking
+from utils.tracking import Tracking
 
+import logging
 import threading
 import sys
 import time
@@ -51,12 +52,12 @@ class TrackingBox(QSplashScreen):
 
         self.threadpool = QThreadPool()
 
-        #print("New Box Created at ",self.x,self.y, " Size ", self.width, self.height)
+        logging.debug("New Box Created at ",self.x,self.y, " Size ", self.width, self.height)
 
         self.start_worker()
 
     def progress_fn(self, n):
-        #print("%d%% done" % n)
+        logging.debug("%d%% done" % n)
         pass
     
     def remove(self):
@@ -78,14 +79,14 @@ class TrackingBox(QSplashScreen):
 
 
     def print_output(self, s):
-        #print(str(self.id))
+        logging.debug(str(self.id))
         self.hide()
         self.repaint_size(round(self.tracking.box[2]*self.shared_variables.DETECTION_SCALE), round(self.tracking.box[3]*self.shared_variables.DETECTION_SCALE))
         self.move(round(self.tracking.box[0]*self.shared_variables.DETECTION_SCALE), round(self.tracking.box[1]*self.shared_variables.DETECTION_SCALE))
         self.show()
 
     def thread_complete(self):
-        #print("THREAD COMPLETE!")
+        logging.debug("THREAD COMPLETE!")
         self.start_worker()
 
     def start_worker(self):
@@ -210,32 +211,7 @@ def create_fancy_box(score, classification,  x,y,width,height):
     label.setStyleSheet(" color: rgb(0, 100, 200); font-size: 30pt; ")
     label.setText( str(int(100*score))+"%" + " " + classification );
 
-
     splash.setAttribute(Qt.WA_NoSystemBackground)
     splash.move(x,y)
     splash.show()
     return splash
-
-
-
-
-
-
-"""
-For Testing
-"""
-#app = QApplication(sys.argv) # create window handler
-#print("do the overlay")
-#screen_overlay_handler.create_box(10,10,100,100)
-#print("done")
-#time.sleep(10)
-#print("do the overlay")
-#screen_overlay_handler.create_box(100,10,100,100)
-
-#list = []
-#list.append(create_fancy_box(100,10,100,100))
-#time.sleep(2)
-#list[0].hide()
-#print("hiede")
-#time.sleep(2)
-#print("done")

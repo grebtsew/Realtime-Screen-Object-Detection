@@ -5,6 +5,8 @@ import cv2
 import pickle
 import struct
 from detection import Obj_Detection
+import logging
+
 """
 COPYRIGHT @ Grebtsew 2019
 
@@ -20,14 +22,14 @@ class TfServer(Thread):
 
     def __init__(self):
         super(TfServer, self).__init__()
-        print("Tensorflow Server started at ", self.HOST, self.PORT)
+        logging.info("Tensorflow Server started at ", self.HOST, self.PORT)
         # Start detections
         self.tf_thread = Obj_Detection()
         # Setup output socket
-        print("Tensorflow Server try connecting to Qt Server ", QtServer_address[0][0],QtServer_address[0][1])
+        logging.debug("Tensorflow Server try connecting to Qt Server ", QtServer_address[0][0],QtServer_address[0][1])
         self.outSocket = socket.socket()
         self.outSocket.connect((QtServer_address[0][0],QtServer_address[0][1]))
-        print("SUCCESS : Tensorflow Server successfully connected to Qt Server!", )
+        logging.debug("SUCCESS : Tensorflow Server successfully connected to Qt Server!", )
 
     def handle_connection(self, conn):
         with conn:
@@ -37,14 +39,14 @@ class TfServer(Thread):
             while True:
                 # Recieve image package size
                 while len(data) < payload_size:
-                    #print("Recv: {}".format(len(data)))
+                    logging.debug("Recv: {}".format(len(data)))
                     data += conn.recv(4096)
 
                 packed_msg_size = data[:payload_size]
                 data = data[payload_size:]
                 msg_size = struct.unpack(">L", packed_msg_size)[0]
 
-                #print("msg_size: {}".format(msg_size))
+                logging.debug("msg_size: {}".format(msg_size))
 
                 # Recieve image
                 while len(data) < msg_size:

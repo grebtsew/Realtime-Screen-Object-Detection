@@ -8,14 +8,34 @@ This is main function, used to start instances of the full program
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
-from shared_variables import Shared_Variables
-#from detection import Detection
-import screen_overlay_handler
-from ThreadPool import *
+from utils.shared_variables import Shared_Variables
+from utils import screen_overlay_handler
+from utils.ThreadPool import *
+from ml import detector
 
 import time
 
 from pyfiglet import Figlet
+
+import logging
+logging.basicConfig(
+    level=logging.DEBUG,  # Set the logging threshold to DEBUG (or another level)
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    filename='last-run.log',  # Log messages to a file (optional)
+    filemode='w'  # Append mode for the log file (optional)
+)
+console_handler = logging.StreamHandler()  # Use the default stream (sys.stdout)
+
+# Create a formatter for the console handler (optional)
+console_formatter = logging.Formatter('%(levelname)s - %(message)s')
+console_handler.setFormatter(console_formatter)
+
+# Add the console handler to the root logger
+root_logger = logging.getLogger()
+root_logger.addHandler(console_handler)
+
+# Create a logger for your module
+logger = logging.getLogger('realtime-screen-object-detection.rsod')
 
 # Change these variables if you want!
 MAX_BOX_AREA = 100000000 # pixels^2
@@ -62,18 +82,19 @@ class MainGUI(QMainWindow):
         self.initiate_shared_variables()
 
         # Create detection and load model
-        #self.detection = Detection(shared_variables = self.shared_variables)
+        
+        self.detection = self.shared_variables.model(shared_variables = self.shared_variables)
 
         self.threadpool = QThreadPool()
 
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+        logging.info("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
-        """
+        
         self.timer = QTimer()
         self.timer.setInterval(10)
         self.timer.timeout.connect(self.print_output)
         self.timer.start()
-        """
+        
 
         # Start Detection thread
         self.start_worker()
@@ -84,21 +105,19 @@ class MainGUI(QMainWindow):
                 time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
                 
             else:
-                #print("Detection...")
+                logging.debug("Detection...")
                 time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
                 #progress_callback.emit(self.detection.run()) # detect and emits boxes!
         return "Done"
 
     def create_tracking_boxes(self, boxes):
-        #print("got detection now create trackerbox")
-        #print(boxes)
+        logging.debug(f"got detection now create trackerbox: {boxes}")
 
         for box in boxes:
             if len(self.shared_variables.list) < MAX_DETECTION:
                 self.shared_variables.list.append(screen_overlay_handler.TrackingBox(len(self.shared_variables.list), self.shared_variables, box[0],box[1],box[2]))
 
     def print_output(self):
-        """
         remove = []
         index = 0
         for box in self.shared_variables.list:
@@ -109,12 +128,12 @@ class MainGUI(QMainWindow):
 
         for i in remove:
             del self.shared_variables.list[i]
-            print(self.shared_variables.list)
-        """
+            logging.debug(self.shared_variables.list)
+        
         pass
 
     def thread_complete(self):
-        #print("sss")
+        logging.debug("Thread closed")
         pass
 
     def start_worker(self):
@@ -130,37 +149,37 @@ class MainGUI(QMainWindow):
 # Main start here
 if __name__ == "__main__":
     f = Figlet(font='slant')
-    print (f.renderText('Realtime Screen stream with Ai detection Overlay'))
-    print("This program starts several threads that stream pc screen and" +
+    logging.info (f.renderText('Realtime Screen stream with Ai detection Overlay'))
+    logging.info("This program starts several threads that stream pc screen and" +
      "run object detection on it and show detections with PyQt5 overlay.")
 
-    print("Starting Program...")
-    print("All threads started, will take a few seconds to load model, enjoy!")
+    logging.info("Starting Program...")
+    logging.info("All threads started, will take a few seconds to load model, enjoy!")
 
-    print()
-    print("----- Settings -----")
-    print("Max box size : "+ str(MAX_BOX_AREA))
-    print("Detection precision treshhold : " + str(100*PRECISION)+"%")
-    print("Max amount of detection : "+ str(MAX_DETECTION))
-    print("Max amount of tracking misses : "+ str(MAX_TRACKING_MISSES))
-    print("Do detections every : "+str(DETECTION_DURATION) + " second")
-    print("Rescale image detection size : " +str(DETECTION_SIZE))
-    print("Classifications : " + str(SHOW_ONLY) + " * if empty all detections are allowed.")
-    print("Screen size : " + str(WIDTH) +"x"+str(HEIGHT))
-    print("Screen offset : "+str(OFFSET))
-    print("Activate HTTPserver : " + str(HTTP_SERVER))
-    print()
+    logging.info("")
+    logging.info("----- Settings -----")
+    logging.info("Max box size : "+ str(MAX_BOX_AREA))
+    logging.info("Detection precision treshhold : " + str(100*PRECISION)+"%")
+    logging.info("Max amount of detection : "+ str(MAX_DETECTION))
+    logging.info("Max amount of tracking misses : "+ str(MAX_TRACKING_MISSES))
+    logging.info("Do detections every : "+str(DETECTION_DURATION) + " second")
+    logging.info("Rescale image detection size : " +str(DETECTION_SIZE))
+    logging.info("Classifications : " + str(SHOW_ONLY) + " * if empty all detections are allowed.")
+    logging.info("Screen size : " + str(WIDTH) +"x"+str(HEIGHT))
+    logging.info("Screen offset : "+str(OFFSET))
+    logging.info("Activate HTTPserver : " + str(HTTP_SERVER))
+    logging.info("")
 
-    print()
-    print("----- Usage -----")
-    print("Exit by typing : 'ctrl+c'")
-    print()
+    logging.info("")
+    logging.info("----- Usage -----")
+    logging.info("Exit by typing : 'ctrl+c'")
+    logging.info("")
 
-    print("")
-    print("Realtime-Screen-stream-with-Ai-detection-Overlay Copyright (C) 2019  Daniel Westberg")
-    print("This program comes with ABSOLUTELY NO WARRANTY;")
-    print("This is free software, and you are welcome to redistribute it under certain conditions;")
-    print("")
+    logging.info("")
+    logging.info("Realtime-Screen-stream-with-Ai-detection-Overlay Copyright (C) 2019  Daniel Westberg")
+    logging.info("This program comes with ABSOLUTELY NO WARRANTY;")
+    logging.info("This is free software, and you are welcome to redistribute it under certain conditions;")
+    logging.info("")
     exit()
     app = QApplication([])
 

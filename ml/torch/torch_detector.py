@@ -1,11 +1,11 @@
 """
 Class for specific usage of tensorflow 2.X
 """
-from detector import Detector
+from ml import detector as d
 
 import torch 
 
-class TorchDetector(Detector):
+class TorchDetector(d.Detector):
     def __init__(self):
         self.model = None
 

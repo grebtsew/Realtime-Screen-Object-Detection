@@ -5,15 +5,16 @@ sys.path.insert(0,'..')
 
 import os
 
+import logging
 from utils import label_map_util
-from screen_overlay_handler import *
+from utils.screen_overlay_handler import *
 import socket
 import pickle
 import numpy as np
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QApplication
 import sys
-import screen_overlay_handler
+import utils.screen_overlay_handler
 
 """
 COPYRIGHT @ Grebtsew 2019
@@ -96,7 +97,7 @@ class QtServer(threading.Thread):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((self.address, self.port))
             s.listen()
-            print("Qt Server started at ", self.address, self.port )
+            logging.info("Qt Server started at ", self.address, self.port )
             while True:
                 conn, addr = s.accept()
                 threading.Thread(target=self.handle_connection, args=(conn,)).start()

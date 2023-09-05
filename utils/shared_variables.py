@@ -19,7 +19,8 @@ from ml.opencv.haar_cascades import HAAR_CASCADES
 # an instace of this class share variables between system threads
 class Shared_Variables():
 
-    model_choise = YOLOv5 # YOLOv5 | SSD | HAAR_CASCADES
+    # Select model to use here!
+    model = YOLOv5 # YOLOv5 | SSD | HAAR_CASCADES
 
     trackingboxes = []
     _initialized = 0
