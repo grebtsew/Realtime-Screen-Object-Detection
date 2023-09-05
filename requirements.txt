@@ -2,10 +2,12 @@
 torch==2.0.1
 keras==2.13.1
 tensorflow==2.13.0
+ultralytics==8.0.171
 
 # Core
+pandas==2.0.3
 pyqt5==5.15.9
-numpy==1.22.0
+numpy==1.22.2
 Image==1.5.33
 opencv-python==4.8.0.76
 pyfiglet==0.8.post1

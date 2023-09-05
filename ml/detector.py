@@ -8,9 +8,9 @@ from abc import ABC, abstractmethod
 
 class Detector(ABC):
 
-    def __init__(self, name, shared_variables) -> None:
-        super().__init__()
-        self.name = name
+    def __init__(self, shared_variables) -> None:
+        super().__init__(shared_variables)
+        
         self.shared_variables = shared_variables
         self.id = id
 

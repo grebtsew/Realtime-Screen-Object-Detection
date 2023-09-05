@@ -73,7 +73,7 @@ class MainGUI(QMainWindow):
 
         # Start webserver
         if HTTP_SERVER:
-            from api.http_server import HTTPserver
+            from server.http_server import HTTPserver
             HTTPserver(shared_variables=self.shared_variables).start()
 
     def __init__(self):
@@ -83,8 +83,10 @@ class MainGUI(QMainWindow):
 
         # Create detection and load model
         
-        self.detection = self.shared_variables.model(shared_variables = self.shared_variables)
-
+        self.detection_model = self.shared_variables.model(shared_variables = self.shared_variables)
+        self.detection_model.download_model()
+        self.detection_model.load_model()
+        
         self.threadpool = QThreadPool()
 
         logging.info("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
@@ -105,9 +107,9 @@ class MainGUI(QMainWindow):
                 time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
                 
             else:
-                logging.debug("Detection...")
+                logging.debug("Trigger Detection...")
                 time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
-                #progress_callback.emit(self.detection.run()) # detect and emits boxes!
+                progress_callback.emit(self.detection_model.predict()) # detect and emits boxes!
         return "Done"
 
     def create_tracking_boxes(self, boxes):
@@ -180,7 +182,7 @@ if __name__ == "__main__":
     logging.info("This program comes with ABSOLUTELY NO WARRANTY;")
     logging.info("This is free software, and you are welcome to redistribute it under certain conditions;")
     logging.info("")
-    exit()
+    
     app = QApplication([])
 
     MainGUI()

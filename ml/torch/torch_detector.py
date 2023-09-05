@@ -6,7 +6,7 @@ from ml import detector as d
 import torch 
 
 class TorchDetector(d.Detector):
-    def __init__(self):
+    def __init__(self, shared_variables):
         self.model = None
 
     def download_model(self):

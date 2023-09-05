@@ -12,7 +12,7 @@ import numpy as np
 import cv2
 import time
 
-from ml.torch.yolov5 import YOLOv5
+from ml.torch.yolo import YOLO
 from ml.tensorflow.ssd import SSD
 from ml.opencv.haar_cascades import HAAR_CASCADES
 # Global shared variables
@@ -20,7 +20,7 @@ from ml.opencv.haar_cascades import HAAR_CASCADES
 class Shared_Variables():
 
     # Select model to use here!
-    model = YOLOv5 # YOLOv5 | SSD | HAAR_CASCADES
+    model = YOLO # YOLO | SSD | HAAR_CASCADES
 
     trackingboxes = []
     _initialized = 0
