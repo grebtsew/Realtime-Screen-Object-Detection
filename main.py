@@ -82,7 +82,6 @@ class MainGUI(QMainWindow):
         self.initiate_shared_variables()
 
         # Create detection and load model
-        
         self.detection_model = self.shared_variables.model(shared_variables = self.shared_variables)
         self.detection_model.download_model()
         self.detection_model.load_model()
@@ -103,14 +102,16 @@ class MainGUI(QMainWindow):
 
     def execute_this_fn(self, progress_callback):
         while True:
+            
             if len(self.shared_variables.SHOW_ONLY) == 0:
-                time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
-                
+                 # how often we should detect stuff
+                pass
             else:
                 logging.debug("Trigger Detection...")
-                time.sleep(self.shared_variables.DETECTION_DURATION) # how often we should detect stuff
-                progress_callback.emit(self.detection_model.predict()) # detect and emits boxes!
-        return "Done"
+                if self.shared_variables.OutputFrame is not None: # wait for the first frame
+                    progress_callback.emit(self.detection_model.predict()) # detect and emits boxes!
+
+            time.sleep(self.shared_variables.DETECTION_DURATION)
 
     def create_tracking_boxes(self, boxes):
         logging.debug(f"got detection now create trackerbox: {boxes}")
@@ -145,7 +146,6 @@ class MainGUI(QMainWindow):
         worker.signals.result.connect(self.print_output)
         worker.signals.finished.connect(self.thread_complete)
         # Execute
-
         self.threadpool.start(worker)
 
 # Main start here

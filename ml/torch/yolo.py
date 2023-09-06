@@ -19,29 +19,29 @@ class YOLO(td.TorchDetector):
         # Load model
         self.model = y('yolov8n.pt')  
         # YOLOv5-specific loading logic
+        
+        # TODO: inherit this
+        self.shared_variables.detection_ready=True
 
     def predict(self):
-        if self.shared_variables.OutputFrame is not None:
-            frame = self.shared_variables.OutputFrame
-            logging.debug("HERE")
-            if( frame is not None):
-                image = frame
-                results = self.model(image)
-                logging.debug(results)
-                # Display the results
-                results.show()
-
-                # Access detected objects and their attributes
-                detected_objects = results.pred[0]
-                for obj in detected_objects:
-                    logging.debug(f"Class: {obj[5]}, Confidence: {obj[4]}")
+        image = self.shared_variables.OutputFrame
+        
+        results = self.model.predict(image)
+        
+        # Access detected objects and their attributes
+        detected_objects = []
+        
+        for obj in results:
+            classes = obj.names
+            for i in range(len(obj.boxes.cls.tolist())):
+                _box = obj.boxes.xywhn.tolist()[i]
                 
-                # YOLOv5 specific prediction logic
-                #prediction = super().predict(image)
-                # Post-process YOLOv5 predictions
-                # Implement your YOLOv5 post-processing here
-
-                logging.debug(f"YOLOv5 prediction results: {results}")
-                return results
-        else:
-            logging.debug("is nune")
+                box = (_box[0],_box[1],_box[2],_box[3])
+                
+                score = obj.boxes.conf.tolist()[i]
+                classification =  obj.boxes.cls.tolist()[i]   
+                
+                detected_objects.append((score,classes[classification], box))
+                
+        return detected_objects
+    

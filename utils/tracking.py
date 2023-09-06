@@ -84,7 +84,7 @@ class Tracking():
     #
     def update_custom_tracker(self):
         self.create_custom_tracker()
-
+        print(self.frame.shape, self.box)
         self.tracker_test = self.tracker.init( self.frame, self.box)
 
 #    def distance_between_boxes(self, box1, box2):
@@ -102,7 +102,7 @@ class Tracking():
     # Calculate
         self.tracker_test, box = self.tracker.update(self.frame)
     # Update tracker box
-        logging.debug(self.tracker_test, box, len(self.shared_variables.list))
+        #logging.debug(self.tracker_test, box, len(self.shared_variables.list))
 
         if self.tracker_test:
             #cv2.waitKey(1)
@@ -119,7 +119,7 @@ class Tracking():
             current_measurement = np.array([[np.float32(box[0])], [np.float32(box[1])]])
             self.kalman.correct(current_measurement)
             prediction = self.kalman.predict()
-            logging.debug(int(prediction[0]), int(prediction[1]))
+            #logging.debug(int(prediction[0]), int(prediction[1]))
             self.box = [int(prediction[0]), int(prediction[1]), box[2], box[3]]
             self.fail_counter = 0
 
@@ -171,7 +171,7 @@ class MultiTracking():
     # Calculate
         self.tracker_test, box = self.tracker.update(self.frame)
     # Update tracker box
-        logging.debug(self.tracker_test, box)
+        #logging.debug(self.tracker_test, box)
         if self.tracker_test:
             cv2.waitKey(1)
             cv2.imshow("test", self.frame)

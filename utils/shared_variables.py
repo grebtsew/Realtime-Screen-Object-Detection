@@ -11,10 +11,12 @@ from threading import Thread
 import numpy as np
 import cv2
 import time
+import logging
 
 from ml.torch.yolo import YOLO
 from ml.tensorflow.ssd import SSD
 from ml.opencv.haar_cascades import HAAR_CASCADES
+
 # Global shared variables
 # an instace of this class share variables between system threads
 class Shared_Variables():
@@ -67,11 +69,13 @@ class Screen_Streamer(Thread):
     def run(self):
         sct = mss()
         monitor = {'top': self.shared_variables.OFFSET[0], 'left': self.shared_variables.OFFSET[1], 'width': self.shared_variables.WIDTH, 'height': self.shared_variables.HEIGHT}
+        logging.info(f"MSS started with monitor : {monitor}")
 
         while self.shared_variables.stream_running:
             if self.shared_variables.detection_ready:
                 img = Image.frombytes('RGB', (self.shared_variables.WIDTH, self.shared_variables.HEIGHT), sct.grab(monitor).rgb)
                 #cv2.imshow('test', np.array(img))
+                #cv2.waitKey(1)
                 #self.shared_variables.frame = np.array(img)
                 self.shared_variables.OutputFrame, self.shared_variables.DETECTION_SCALE = self.downscale(np.array(img))
                 if cv2.waitKey(25) & 0xFF == ord('q'):

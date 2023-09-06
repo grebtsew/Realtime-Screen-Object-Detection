@@ -26,12 +26,13 @@ class TrackingBox(QSplashScreen):
         self.classification = classification
         self.shared_variables = shared_variables
         self.counter = 0
-        self.x = box[0]
-        self.y = box[1]
-        self.width = box[2]
-        self.height = box[3]
+        height, width, _ = self.shared_variables.OutputFrame.shape
+        self.x = int(box[0]*width)
+        self.y = int(box[1]*height)
+        self.width = int(box[2]*width)
+        self.height = int(box[3]*height)
         self.id = id
-        self.splash_pix = QPixmap('./images/box2.png')
+        self.splash_pix = QPixmap('./docs/box2.png')
         self.splash_pix = self.splash_pix.scaled(round(self.width*self.shared_variables.DETECTION_SCALE),round(self.height*self.shared_variables.DETECTION_SCALE));
         self.setPixmap(self.splash_pix)
 
@@ -52,7 +53,7 @@ class TrackingBox(QSplashScreen):
 
         self.threadpool = QThreadPool()
 
-        logging.debug("New Box Created at ",self.x,self.y, " Size ", self.width, self.height)
+        logging.debug(f"New Box Created at {str(self.x)} {str(self.y)}  Size {str(self.width)} {str(self.height)}")
 
         self.start_worker()
 
@@ -79,14 +80,14 @@ class TrackingBox(QSplashScreen):
 
 
     def print_output(self, s):
-        logging.debug(str(self.id))
+        #logging.debug(str(self.id))
         self.hide()
         self.repaint_size(round(self.tracking.box[2]*self.shared_variables.DETECTION_SCALE), round(self.tracking.box[3]*self.shared_variables.DETECTION_SCALE))
         self.move(round(self.tracking.box[0]*self.shared_variables.DETECTION_SCALE), round(self.tracking.box[1]*self.shared_variables.DETECTION_SCALE))
         self.show()
 
     def thread_complete(self):
-        logging.debug("THREAD COMPLETE!")
+        #logging.debug("THREAD COMPLETE!")
         self.start_worker()
 
     def start_worker(self):
