@@ -17,7 +17,7 @@ power on my laptop, feel free to change models, detection and remove loop delays
 
 # About
 RSOD (Realtime Screen Object Detection) is a program I created to visualize
-realtime object detetions on screen capture. To capture pc screen I use the `mss`
+realtime object detections on screen capture. To capture pc screen I use the `mss`
 library. Detections are visualized through `PyQt5` as overlays. Feel free to try it out
 and change setting variables in the `main.py` file. Possible usages for this program can
 be to track and discover objects on screen to assist users or perhaps to enhanced
