@@ -44,7 +44,7 @@ MAX_DETECTION = 5
 MAX_TRACKING_MISSES = 30
 WIDTH = 1920
 HEIGHT = 1080
-SHOW_ONLY = ["person"] # Start Empty, receive items to show
+SHOW_ONLY = ["person","Person"] # Start Empty, receive items to show
 OFFSET = (0,0)
 DETECTION_SIZE = 480
 DETECTION_DURATION = 2
@@ -114,7 +114,8 @@ class MainGUI(QMainWindow):
             time.sleep(self.shared_variables.DETECTION_DURATION)
 
     def create_tracking_boxes(self, boxes):
-        logging.debug(f"got detection now create trackerbox: {boxes}")
+        if len(boxes)> 0:
+            logging.debug(f"got detection now create trackerbox: {boxes}")
 
         for box in boxes:
             if len(self.shared_variables.list) < MAX_DETECTION:
