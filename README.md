@@ -1,6 +1,10 @@
 **NOTE**: Current implementation is under construction, and currently not working due to version incompatibility, when working it will be published in a new release! TODO:
 
+After installing pip packages. 
+Run this to stop ultralytics library from sending data to google analytics:
+```bash
 yolo settings sync=false
+```
 
 <p align="center">
   <img width="460" height="300" src="docs/logo.png">
@@ -46,6 +50,8 @@ git clone https://github.com/grebtsew/Realtime-Screen-Object-Detection.git
 ```
 3. Run python script `main.py`
 
+# Change Settings
+
 # Client Server
 A client/server solution has been added to further increase performability and accelerate detections.
 Test the implementation by running the `starter.py` file. The structure is explained below.
@@ -78,6 +84,20 @@ data = {
     'api_crypt':"password-1"
       }
 ```
+# Testing
+
+This project contains unit tests using pytest and build tests using docker.
+The tests are used in CI github actions. To run tests locally run the commands:
+```bash
+
+# Unit tests
+pytest
+
+# Build test, to see that all versions still exists
+docker-compose up -d
+docker-compose down
+```
+
 # Deprecated demo
 ![demo](docs/demo1.gif)
 
