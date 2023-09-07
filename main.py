@@ -131,12 +131,11 @@ class MainGUI(QMainWindow):
 
         for i in remove:
             del self.shared_variables.list[i]
-            logging.debug(self.shared_variables.list)
+            #logging.debug(self.shared_variables.list)
         
-        pass
-
+        
     def thread_complete(self):
-        logging.debug("Thread closed")
+        #logging.debug("Thread closed")
         pass
 
     def start_worker(self):

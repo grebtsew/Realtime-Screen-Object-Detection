@@ -26,11 +26,10 @@ class TrackingBox(QSplashScreen):
         self.classification = classification
         self.shared_variables = shared_variables
         self.counter = 0
-        height, width, _ = self.shared_variables.OutputFrame.shape
-        self.x = int(box[0]*width)
-        self.y = int(box[1]*height)
-        self.width = int(box[2]*width)
-        self.height = int(box[3]*height)
+        self.x = int(box[0]*self.shared_variables.WIDTH)
+        self.y = int(box[1]*self.shared_variables.HEIGHT)
+        self.width = int(box[2]*self.shared_variables.WIDTH)
+        self.height = int(box[3]*self.shared_variables.HEIGHT)
         self.id = id
         self.splash_pix = QPixmap('./docs/box2.png')
         self.splash_pix = self.splash_pix.scaled(round(self.width*self.shared_variables.DETECTION_SCALE),round(self.height*self.shared_variables.DETECTION_SCALE));
