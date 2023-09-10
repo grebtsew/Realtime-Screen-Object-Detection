@@ -1,0 +1,57 @@
+#
+# The purpose of this file is to illustrate how all applications can be executed.
+# However, it is only the AiServer container that will run.
+# All other containers are ment to run locally as they need local resources to work.
+# Such as screengrab and gui handling.
+# Thus, this docker-compose are mainly for testing container builds and illustrating usage.
+#
+
+version: '3.8'
+
+services:
+
+  qtserver:
+    image: grebtsew/qtserver
+    container_name: qtserver
+    build:
+      context: .
+    entrypoint: python3 ./server/QtServer.py
+    ports:
+      - "8081:8081"
+    networks:
+      - rsod-net
+  
+  mssclient:
+    image: grebtsew/mssclient
+    container_name: mssclient
+    build:
+      context: .
+    entrypoint: python3 ./server/MssClient.py
+    networks:
+      - rsod-net
+    
+  aiserver:
+    image: grebtsew/aiserver
+    container_name: aiserver
+    build:
+      context: .
+    entrypoint: python3 ./server/AiServer.py
+    ports:
+      - "8585:8585"
+    networks:
+      - rsod-net
+
+  mainapp:
+    image: grebtsew/main
+    container_name: main
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    networks:
+      - rsod-net
+
+
+networks:
+  rsod-net:
+    driver: bridge

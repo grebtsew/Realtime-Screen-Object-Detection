@@ -4,32 +4,32 @@ import socket
 import cv2
 import pickle
 import struct
-from detection import Obj_Detection
 import logging
+from ml.torch import yolo
 
 """
 COPYRIGHT @ Grebtsew 2019
 
-TfServer recieves a couple of connections, reads images from incomming streams
+AiServer receives a couple of connections, reads images from incoming streams
 and send detections to the QtServer
 """
 
 QtServer_address= [["127.0.0.1",8081]]
 
-class TfServer(Thread):
+class AiServer(Thread):
     HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
     PORT = 8585        # Port to listen on (non-privileged ports are > 1023)
 
     def __init__(self):
-        super(TfServer, self).__init__()
+        super(AiServer, self).__init__()
         logging.info("Tensorflow Server started at ", self.HOST, self.PORT)
         # Start detections
-        self.tf_thread = Obj_Detection()
+        self.ai_thread = yolo.YOLO()
         # Setup output socket
-        logging.debug("Tensorflow Server try connecting to Qt Server ", QtServer_address[0][0],QtServer_address[0][1])
+        logging.debug("Ai Server try connecting to Qt Server ", QtServer_address[0][0],QtServer_address[0][1])
         self.outSocket = socket.socket()
         self.outSocket.connect((QtServer_address[0][0],QtServer_address[0][1]))
-        logging.debug("SUCCESS : Tensorflow Server successfully connected to Qt Server!", )
+        logging.debug("SUCCESS : Ai Server successfully connected to Qt Server!", )
 
     def handle_connection(self, conn):
         with conn:
@@ -59,9 +59,10 @@ class TfServer(Thread):
                 frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
 
                 # do detetions
-                self.tf_thread.frame = frame
-                self.tf_thread.run_async()
-                detect_res = self.tf_thread.get_result()
+                # TODO:
+                #self.ai_thread.frame = frame
+                #self.ai_thread.run_async()
+                #detect_res = self.ai_thread.get_result()
 
                 # send detection result to QtServer
                 if detect_res is not None:
@@ -81,4 +82,4 @@ class TfServer(Thread):
 
 
 if __name__ == '__main__':
-    tfserver = TfServer().start()
+    aiserver = AiServer().start()

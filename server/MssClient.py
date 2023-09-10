@@ -19,7 +19,7 @@ to each server then recieve result and display images
 
 server_list= [["127.0.0.1",8585]]
 QtServer_address= [["127.0.0.1",8081]]
-image_size_treshhold = 720;
+image_size_treshhold = 720
 screensize = (1920, 1080)
 
 class MssClient(threading.Thread):

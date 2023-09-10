@@ -108,7 +108,7 @@ def show_rect(scores, c,x,y,w,h):
 def remove_old_detections():
     for box in list:
         if time.time() - box[1] > BOX_VIS_TIME:
-            list.remove(box);
+            list.remove(box)
 
 def paint_rects():
     if len(queue) > 0:
