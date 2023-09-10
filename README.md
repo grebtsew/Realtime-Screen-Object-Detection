@@ -1,14 +1,12 @@
-**NOTE**: Current implementation is under construction, and currently not working due to version incompatibility, when working it will be published in a new release! TODO:
 
-After installing pip packages. 
-Run this to stop ultralytics library from sending data to google analytics:
-```bash
-yolo settings sync=false
-```
 
 <p align="center">
   <img width="460" height="300" src="docs/logo.png">
 </p>
+
+![license](https://img.shields.io/github/license/grebtsew/Realtime-Screen-Object-Detection)
+![size](https://img.shields.io/github/repo-size/grebtsew/Realtime-Screen-Object-Detection)
+![commit](https://img.shields.io/github/last-commit/grebtsew/Realtime-Screen-Object-Detection)
 
 ![demo](docs/demo2.gif)
 
@@ -39,6 +37,13 @@ If you have `Python3 pip` installed you can install required packages by running
 ```bash
  pip install -r requirements.txt
 ```
+
+After installing pip packages. 
+Run this to stop ultralytics library from sending data to google analytics:
+```bash
+yolo settings sync=false
+```
+
 
 # Run
 This tutorial takes you through the execution of this program.
@@ -95,7 +100,7 @@ pytest
 
 # Build test, to see that all versions still exists
 docker-compose up -d
-docker-compose down
+# This will generally complain about not accessing QT and MSS. (GUI and screen grab)
 ```
 
 # Deprecated demo
@@ -107,7 +112,7 @@ See screenshot of program execution below:
 ![screenshot](docs/screenshot.png)
 
 # License
-[MIT](LICENSE)
+This repository uses [MIT](LICENSE) license.
 
 
 COPYRIGHT @ Grebtsew 2019
