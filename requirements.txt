@@ -13,7 +13,7 @@ Image==1.5.33
 opencv-python==4.8.0.76
 pyfiglet==0.8.post1
 mss==9.0.1
-pillow==10.0.0
+pillow==10.0.1
 
 # Format and testing
 black==23.7.0
